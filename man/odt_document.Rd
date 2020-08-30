@@ -5,9 +5,14 @@
 \title{Convert to an OpenDocument Text (ODT) document}
 \usage{
 odt_document(
+  toc = FALSE,
+  toc_depth = 3,
+  number_sections = FALSE,
   fig_width = 5,
   fig_height = 4,
   fig_caption = TRUE,
+  df_print = "default",
+  highlight = "default",
   template = "default",
   reference_odt = "default",
   includes = NULL,
@@ -17,11 +22,33 @@ odt_document(
 )
 }
 \arguments{
+\item{toc}{\code{TRUE} to include a table of contents in the output}
+
+\item{toc_depth}{Depth of headers to include in table of contents}
+
+\item{number_sections}{\code{TRUE} to number section headings}
+
 \item{fig_width}{Default width (in inches) for figures}
 
 \item{fig_height}{Default height (in inches) for figures}
 
 \item{fig_caption}{\code{TRUE} to render figures with captions}
+
+\item{df_print}{Method to be used for printing data frames. Valid values
+include "default", "kable", "tibble", and "paged". The "default" method
+uses a corresponding S3 method of \code{print}, typically
+\code{print.data.frame}. The "kable" method uses the
+\code{\link[knitr:kable]{knitr::kable}} function. The "tibble" method uses
+the \pkg{tibble} package to print a summary of the data frame. The "paged"
+method creates a paginated HTML table (note that this method is only valid
+for formats that produce HTML). In addition to the named methods you can
+also pass an arbitrary function to be used for printing data frames. You
+can disable the \code{df_print} behavior entirely by setting the option
+\code{rmarkdown.df_print} to \code{FALSE}.}
+
+\item{highlight}{Syntax highlighting style. Supported styles include
+"default", "tango", "pygments", "kate", "monochrome", "espresso",
+"zenburn", and "haddock". Pass \code{NULL} to prevent syntax highlighting.}
 
 \item{template}{Pandoc template to use for rendering. Pass "default" to use
 the rmarkdown package default template; pass \code{NULL} to use pandoc's

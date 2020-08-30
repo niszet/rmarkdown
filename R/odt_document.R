@@ -31,9 +31,14 @@
 #' render("input.Rmd", odt_document(highlight = "zenburn"))
 #' }
 #' @export
-odt_document <- function(fig_width = 5,
+odt_document <- function(toc = FALSE,
+                         toc_depth = 3,
+                         number_sections = FALSE,
+                         fig_width = 5,
                          fig_height = 4,
                          fig_caption = TRUE,
+                         df_print = "default",
+                         highlight = "default",
                          template = "default",
                          reference_odt = "default",
                          includes = NULL,
@@ -52,9 +57,26 @@ odt_document <- function(fig_width = 5,
   # base pandoc options for all odt output
   args <- c()
 
+  # table of contents
+  args <- c(args, pandoc_toc_args(toc, toc_depth))
+
+  # numbered sections
+  if (number_sections) {
+    if (pandoc_available("2.10.1")) {
+      args <- c(args, "--number-sections")
+    } else {
+      warning("number_sections for word_document requires Pandoc >= 2.10.1")
+    }
+  }
+
   # template
   if (!is.null(template) && !identical(template, "default"))
     args <- c(args, "--template", pandoc_path_arg(template))
+
+  # highlighting
+  if (!is.null(highlight))
+    highlight <- match.arg(highlight, highlighters())
+  args <- c(args, pandoc_highlight_args(highlight))
 
   # content includes
   args <- c(args, includes_to_pandoc_args(includes))
@@ -85,6 +107,7 @@ odt_document <- function(fig_width = 5,
                             from = from_rmarkdown(fig_caption, md_extensions),
                             args = args),
     keep_md = keep_md,
+    df_print = df_print,
     pre_processor = pre_processor,
     intermediates_generator = intermediates_generator
   )
